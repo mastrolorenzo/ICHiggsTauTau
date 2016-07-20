@@ -93,7 +93,7 @@ BLIND = options.blind
 BLIND = "false"
 if options.blind: BLIND = "true"
 COM = options.energy
-YEAR = '2015'
+YEAR = '2016'
 
 #Hacky config file parsing
 with open("%(CFG)s"%vars(),"r") as cfgfile:
@@ -163,8 +163,9 @@ if SCHEME == 'run2_sm':
 #  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"
   scheme_et = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--qcd_os_ss_factor=1.0'),
-    ("8",   "inclusive",    "inclusivemt40",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 ')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<50&&pt_2>30&&pt_1>26" --qcd_os_ss_factor=1.0'),
+    ("8",   "nobtag",       "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<50&&pt_2>30&&pt_1>26" --qcd_os_ss_factor=1.0 '),
+    ("8",   "btag",         "btag",  BINS_FINE, '--set_alias="sel:mt_1<50&&pt_2>30&&pt_1>26" --qcd_os_ss_factor=1.0 ')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ""),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
@@ -172,8 +173,9 @@ if SCHEME == 'run2_sm':
 #    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --set_alias="w_shape_os:1"')
   ]
   scheme_mt = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '--qcd_os_ss_factor=1.17'),
-    ("8",   "inclusive",    "inclusivemt40",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '--set_alias="sel:mt_1<40&&pt_2>30&&pt_1>23" --qcd_os_ss_factor=1.00'),
+    ("8",   "nobtag",       "nobtag",  BINS_FINE,     '--set_alias="sel:mt_1<40&&pt_2>30&&pt_1>23" --qcd_os_ss_factor=1.00'),
+    ("8",   "btag",         "btag",  BINS_FINE,       '--set_alias="sel:mt_1<40&&pt_2>30&&pt_1>23" --qcd_os_ss_factor=1.00')
 #    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),

@@ -63,6 +63,8 @@ namespace ic {
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
+      outtree_->Branch("wt_antiiso1",       &wt_antiiso1_);
+      outtree_->Branch("wt_antiiso2",       &wt_antiiso2_);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",              &mt_sv_.var_double);
@@ -924,6 +926,8 @@ namespace ic {
     if(event->Exists("btag_evt_weight")){
      wt_btag_ = event->Get<double>("btag_evt_weight");
     } 
+    wt_antiiso1_ = event->Exists("trigantiiso1") ? event->Get<double>("trigantiiso1"): 1.0;
+    wt_antiiso2_ = event->Exists("trigantiiso2") ? event->Get<double>("trigantiiso2") :1.0;
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
     // for each new event

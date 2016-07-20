@@ -1251,14 +1251,22 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
  if(strategy_type ==strategy::spring16&&channel!=channel::wmnu){
    TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele25_Data_Eff");
    TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele25_Data_Eff");
+   TH2D et_trigantiiso1_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16tempantiiso0p1to0p2.root","/","Ele25_Data_Eff");
+   TH2D et_trigantiiso2_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16tempantiiso0p2to0p5.root","/","Ele25_Data_Eff");
    TH2D et_xtrig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele24_Data_Eff");
    TH2D et_xtrig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele24_Data_Eff");
+   TH2D et_xtrigantiiso1_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16tempantiiso0p1to0p2.root","/","Ele24_Data_Eff");
+   TH2D et_xtrigantiiso2_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16tempantiiso0p2to0p5.root","/","Ele24_Data_Eff");
    TH2D et_conditional_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_conditional.root","/","Ele25GivenEle24_Data_Eff");
    TH2D et_conditional_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_conditional.root","/","Ele25GivenEle24_Data_Eff");
    TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16temp.root","/","Mu22_Data_Eff");
    TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16temp.root","/","Mu22_Data_Eff");
+   TH2D mt_trigantiiso1_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16tempantiiso0p15to0p25.root","/","Mu22_Data_Eff");
+   TH2D mt_trigantiiso2_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16tempantiiso0p25to0p5.root","/","Mu22_Data_Eff");
    TH2D mt_xtrig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16temp.root","/","Mu19_Data_Eff");
    TH2D mt_xtrig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16temp.root","/","Mu19_Data_Eff");
+   TH2D mt_xtrigantiiso1_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16tempantiiso0p15to0p25.root","/","Mu19_Data_Eff");
+   TH2D mt_xtrigantiiso2_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16tempantiiso0p25to0p5.root","/","Mu19_Data_Eff");
    TH2D mt_conditional_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_conditional.root","/","Mu22GivenMu19_Data_Eff");
    TH2D mt_conditional_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_conditional.root","/","Mu22GivenMu19_Data_Eff");
    TH2D et_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
@@ -1288,10 +1296,14 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
+    .set_et_trigantiiso1_data(new TH2D(et_trigantiiso1_data)).set_et_trigantiiso2_data(new TH2D(et_trigantiiso2_data))
     .set_et_xtrig_mc(new TH2D(et_xtrig_mc)).set_et_xtrig_data(new TH2D(et_xtrig_data))
+    .set_et_xtrigantiiso1_data(new TH2D(et_xtrigantiiso1_data)).set_et_xtrigantiiso2_data(new TH2D(et_xtrigantiiso2_data))
     .set_et_conditional_mc(new TH2D(et_conditional_mc)).set_et_conditional_data(new TH2D(et_conditional_data))
     .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+    .set_mt_trigantiiso1_data(new TH2D(mt_trigantiiso1_data)).set_mt_trigantiiso2_data(new TH2D(mt_trigantiiso2_data))
     .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
+    .set_mt_xtrigantiiso1_data(new TH2D(mt_xtrigantiiso1_data)).set_mt_xtrigantiiso2_data(new TH2D(mt_xtrigantiiso2_data))
     .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data))
     .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
     .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
@@ -1302,7 +1314,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
   if (!is_data ) {
-    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+    httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
     //if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
     if(channel == channel::et) httWeights.set_do_etau_fakerate(true);
   }
