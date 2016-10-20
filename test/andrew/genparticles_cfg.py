@@ -83,13 +83,17 @@ process.printTreeMerged = cms.EDAnalyzer("ParticleListDrawer",
   src = cms.InputTag("mergeGenParticles")
 )
 
-
+process.mygenerator = cms.EDProducer("GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergeGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+)
 
 
 process.p = cms.Path(
     process.mergeGenParticles+
     process.printTree+
-    process.printTreeMerged
+    process.printTreeMerged+
+    process.mygenerator
 )
 
 process.schedule = cms.Schedule(process.p)
