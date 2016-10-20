@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include "TTree.h"
+#include "TFile.h"
 #include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -28,6 +30,12 @@ class ICEventInfoProducer : public edm::EDProducer {
   virtual void endRun(edm::Run const& run, edm::EventSetup const& es);
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
+
+  TFile *fout;
+  TTree *tout;
+  unsigned long evt;
+  int stage0;
+  int stage1;
 
   ic::EventInfo *info_;
   std::string branch_;

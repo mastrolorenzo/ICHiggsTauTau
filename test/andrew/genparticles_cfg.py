@@ -12,9 +12,12 @@ opts.register('file', '',
     parser.VarParsing.varType.string, 'input file')
 opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'global tag')
+opts.register('isMini', 1, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, 'Process as data')
 opts.parseArguments()
-infile = opts.file
+infile = opts.file.split(',')
 tag  = opts.globalTag
+isMini =opts.isMini
 
 print 'globalTag    : '+str(tag)
 
@@ -35,7 +38,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000000)
+    input = cms.untracked.int32(-1)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 500
@@ -53,7 +56,7 @@ process.load("CondCore.CondDB.CondDB_cfi")
 from CondCore.CondDB.CondDB_cfi import *
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(infile)
+    fileNames = cms.untracked.vstring(*infile)
     )
 
 process.GlobalTag.globaltag = cms.string(tag)
@@ -88,13 +91,53 @@ process.mygenerator = cms.EDProducer("GenParticles2HepMCConverter",
     genEventInfo = cms.InputTag("generator"),
 )
 
+if not isMini:
+    process.mygenerator.genParticles = cms.InputTag("genParticles")
 
-process.p = cms.Path(
-    process.mergeGenParticles+
-    process.printTree+
-    process.printTreeMerged+
-    process.mygenerator
+
+process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
+  HepMCCollection = cms.InputTag('mygenerator','unsmeared'),
+  ProductionMode = cms.string('VBF'),
+  #ProductionMode = cms.string('QQ2ZH'),
 )
+
+import UserCode.ICHiggsTauTau.default_producers_cfi as producers
+
+process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+    includeHT           = cms.bool(False),
+    lheProducer         = cms.InputTag("externalLHEProducer"),
+    includeJetRho       = cms.bool(True),
+    inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
+    includeLeptonRho    = cms.bool(False),
+    inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
+    includeVertexCount  = cms.bool(False),
+    inputVertices       = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    includeCSCFilter    = cms.bool(False),
+    inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+)
+
+# if not isData:
+#     process.icEventInfoProducer.includeLHEWeights = cms.bool(True)
+
+process.icEventProducer = producers.icEventProducer.clone()
+
+if isMini:
+    process.p = cms.Path(
+        process.mergeGenParticles+
+        process.printTree+
+        process.printTreeMerged+
+        process.mygenerator+
+        process.rivetProducerHTXS+
+        process.icEventInfoProducer+
+        process.icEventProducer
+    )
+else:
+    process.p = cms.Path(
+        process.mygenerator+
+        process.rivetProducerHTXS+
+        process.icEventInfoProducer+
+        process.icEventProducer
+    )
 
 process.schedule = cms.Schedule(process.p)
 # print process.dumpPython()

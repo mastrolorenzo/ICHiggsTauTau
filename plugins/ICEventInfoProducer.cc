@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "TTree.h"
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
 #include "boost/format.hpp"
@@ -52,6 +53,8 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
 #endif
       consumes<GenEventInfoProduct>({"generator"});
       consumes<LHEEventProduct>(lhe_collection_);
+      consumes<int>(edm::InputTag("rivetProducerHTXS", "stage0cat"));
+      consumes<int>(edm::InputTag("rivetProducerHTXS", "stage1cat"));
       consumes<double>(input_leptons_rho_);
       consumes<double>(input_jets_rho_);
       consumes<edm::View<reco::Vertex>>(input_vertices_);
@@ -101,6 +104,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     gen_weights_.push_back(
         std::make_pair(gwt[i], gwt_pset.getParameter<edm::InputTag>(gwt[i])));
         consumes<double>(gen_weights_[i].second);
+
   }
 
   info_ = new ic::EventInfo();
@@ -112,6 +116,12 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
   PrintOptional(1, do_leptons_rho_, "includeLeptonRho");
   PrintOptional(1, do_vertex_count_, "includeVertexCount");
   PrintOptional(1, do_csc_filter_, "includeCSCFilter");
+
+  fout = new TFile("template_xs.root", "RECREATE");
+  tout = new TTree("ntuple", "ntuple");
+  tout->Branch("evt", &evt, "evt/l");
+  tout->Branch("stage0cat", &stage0);
+  tout->Branch("stage1cat", &stage1);
 }
 
 ICEventInfoProducer::~ICEventInfoProducer() {
@@ -143,11 +153,20 @@ void ICEventInfoProducer::produce(edm::Event& event,
   info_->set_run(event.run());
 #if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION ==7 && CMSSW_MINOR_VERSION >= 3)
   info_->set_event(event.id().event());
+  evt = event.id().event();
 #else
   info_->set_event((unsigned long long)event.id().event());
 #endif
   info_->set_lumi_block(event.luminosityBlock());
   info_->set_bunch_crossing(event.bunchCrossing());
+
+  edm::Handle<int> stage0_handle;
+  edm::Handle<int> stage1_handle;
+  event.getByLabel(edm::InputTag("rivetProducerHTXS", "stage0cat"), stage0_handle);
+  event.getByLabel(edm::InputTag("rivetProducerHTXS", "stage1cat"), stage1_handle);
+  stage0 = *stage0_handle;
+  stage1 = *stage1_handle;
+  tout->Fill();
 
   edm::Handle<double> jets_rho_handle;
   if (do_jets_rho_) {
@@ -302,6 +321,9 @@ void ICEventInfoProducer::beginJob() {
 }
 
 void ICEventInfoProducer::endJob() {
+  fout->cd();
+  tout->Write();
+  fout->Close();
   if (!observed_filters_.empty()) {
     std::cout << std::string(78, '-') << "\n";
     std::cout << boost::format("%-56s  %20s\n") %
